@@ -1,165 +1,234 @@
-SPINE MRI VIEWER - CLIENT SETUP & NOTES
-=======================================
+SPINE MRI VIEWER - CLIENT SETUP AND FINAL NOTES
+===============================================
 
+GitHub repository:
+   https://github.com/PrageethM1702/Spine-MRI-Viewer
+
+Codespaces:
+   https://codespaces.new/PrageethM1702/Spine-MRI-Viewer
+
+------------------------------------------------------------
 PROJECT OVERVIEW
-----------------
-This application is an interactive MRI visualization and analysis tool built using:
-- Marimo (interactive notebook UI)
-- ipyniivue (MRI volume viewer)
-- Python scientific stack (nibabel, numpy, pandas, matplotlib)
+------------------------------------------------------------
+
+This application is an interactive spine MRI visualization and analysis tool.
+
+Built with:
+
+   - Marimo
+   - IPyNiiVue
+   - Plotly
+   - nibabel
+   - pandas
+   - scipy
+   - matplotlib
 
 It supports:
-- MRI visualization (T2-weighted volumes)
-- Vendor-based filtering
-- Subject selection
-- PNG export (MRI slice)
-- CSV export (metadata)
-- Cohort-level statistical analysis
+
+   - Vendor filtering
+   - Participant selection
+   - On-demand MRI download from spine-generic/data-multi-subject
+   - 2D multiplanar NIfTI viewing
+   - Anatomy-aware 2D overlays
+   - Anatomy-aware 3D Plotly visualization
+   - Spinal cord boundary overlays
+   - Vertebral/disc label overlays
+   - PAM50 cord/template proxy overlay
+   - Cohort histogram
+   - Metadata CSV export
+   - 2D slice PNG export
+   - 3D Plotly PNG export when kaleido is installed
+   - Annotation and screenshot export
+   - Distance, Cobb angle, and raw voxel intensity measurement
+   - Quantitative metrics CSV/TSV upload and filtering
 
 ------------------------------------------------------------
-
-HOW TO RUN THE APPLICATION
+HOW TO RUN LOCALLY
 ------------------------------------------------------------
 
-1. Open project folder
+From the project root:
 
-2. Activate virtual environment
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   marimo run spine_app.py
 
-3. Install dependencies (if not already installed)
+Open:
+
+   http://localhost:2718
+
+If the browser does not open automatically, copy the URL printed in the terminal.
+
+------------------------------------------------------------
+HOW TO RUN IN CODESPACES
+------------------------------------------------------------
+
+Open:
+
+   https://codespaces.new/PrageethM1702/Spine-MRI-Viewer
+
+The devcontainer will:
+
+   - Install Python dependencies
+   - Install git-annex
+   - Create data/cache, data/metrics, and data/data-multi-subject
+   - Download participants.tsv
+   - Start Marimo on port 2718
+
+------------------------------------------------------------
+TESTING CHECKLIST
+------------------------------------------------------------
+
+1. Open the app.
+2. Select a vendor, for example GE or Siemens.
+3. Select a subject.
+4. Click Download for that subject.
+5. Confirm the 2D viewer loads.
+6. Confirm spinal cord boundary overlay aligns in 2D.
+7. Switch to 3D render.
+8. Confirm spinal cord/PAM50/vertebral label geometry appears.
+9. Export metadata CSV.
+10. Export 2D slice PNG.
+11. Test Plotly 3D PNG export.
+12. Use annotation tool and download screenshot.
+13. Use ruler, Cobb angle, and intensity probe.
+14. Upload a metric CSV/TSV and confirm the metrics panel filters by subject/level.
+
+------------------------------------------------------------
+METRIC CSV/TSV REQUIREMENTS
+------------------------------------------------------------
+
+The app does not include CSA/FA/MTR metric files by default.
+
+The client should provide metric CSV/TSV files through the app upload widget or
+place them in:
+
+   data/metrics/
+
+Recommended columns:
+
+   participant_id, vertebral_level, CSA, FA, MTR
+
+Accepted subject columns:
+
+   participant_id, subject, subject_id, participant, sub
+
+Accepted level columns:
+
+   vertebral_level, level, label, vert_level, disc_level
+
+Example:
+
+   participant_id,vertebral_level,CSA,FA,MTR
+   sub-beijingGE01,C1,75.2,0.61,34.5
+   sub-beijingGE01,C2,73.8,0.59,35.1
+
+------------------------------------------------------------
+PERFORMANCE MODE
+------------------------------------------------------------
+
+Full-resolution mode:
+
+   Use this for aligned overlays and final review.
+
+Fast Preview:
+
+   Downsamples large NIfTI volumes for faster viewing.
+   Anatomy overlays are disabled in Fast Preview to avoid alignment errors.
+
+------------------------------------------------------------
+EXPORT NOTES
+------------------------------------------------------------
+
+Metadata CSV:
+
+   Exports subject_id, vendor, field_strength, mean_intensity, and voxel_dims.
+
+2D PNG:
+
+   Exports a central slice fallback image.
+
+3D PNG:
+
+   Exports the Plotly 3D anatomy scene when kaleido is available.
+   kaleido is included in requirements.txt.
+
+If 3D PNG export is unavailable:
 
    pip install -r requirements.txt
 
-4. Run the application
-
-   marimo run spine_app.py
-
-5. Open the local URL shown in terminal (browser will launch UI)
+Then restart Marimo.
 
 ------------------------------------------------------------
-
-TESTING (OPTIONAL)
+FEATURES IMPLEMENTED
 ------------------------------------------------------------
 
-Run test suite from project root:
+Done:
 
-   python -m tests.test_loader
-   python -m tests.test_imports
-   python -m tests.test_analysis
+   - Vendor dropdown
+   - Participant selector
+   - Cohort histogram
+   - Metadata CSV export
+   - PNG export support
+   - Codespaces/devcontainer setup
+   - Performance guardrails
+   - Annotation and screenshot
+   - Distance ruler
+   - Cobb angle tool
+   - Raw voxel intensity probe
+   - Anatomy-aware 2D overlays
+   - Anatomy-aware 3D visualization
+   - Vertebral/disc labels
+   - Spinal cord boundary overlay
+   - PAM50 cord/template proxy
+   - Quantitative metrics panel
+   - Metric CSV/TSV upload
 
-------------------------------------------------------------
+Paused by latest client scope:
 
-IMPORTANT DATA NOTE (GIT-ANNEX / LARGE MRI FILES)
-------------------------------------------------------------
-
-This dataset uses git-annex for storing large MRI files.
-
-WHAT THIS MEANS:
-- MRI files (.nii.gz) are NOT always fully downloaded by default
-- Some files appear in the dataset but are only placeholders
-- Actual image data must be downloaded before visualization
-
-IF IMAGES DO NOT LOAD OR APPEAR EMPTY:
-
-Run the following command for required subjects:
-
-   git annex get data/data-multi-subject/sub-XXX/anat/sub-XXX_T2w.nii.gz
-
-Replace "sub-XXX" with the required subject ID.
-
-WHY THIS IS IMPORTANT:
-- Viewer requires full MRI volume data to render slices
-- PNG export will fail or produce blank images if data is missing
-- Cohort analysis skips missing or incomplete files
+   - Offline PWA
+   - DICOM upload
+   - URL-based view sharing
+   - Case PDF export
+   - Multi-user sync
 
 ------------------------------------------------------------
-
-EXPORT FEATURES
+IMPORTANT GIT NOTES
 ------------------------------------------------------------
 
-1. CSV EXPORT
-- Exports subject metadata (subject, vendor, file path)
+Do not commit:
 
-2. PNG EXPORT
-- Exports central axial slice of MRI as PNG image
+   - venv/
+   - data/
+   - __pycache__/
+   - __marimo__/
+   - exports/
 
-NOTE:
-PNG export only works if the corresponding .nii.gz file is fully downloaded.
-
-------------------------------------------------------------
-
-KNOWN BEHAVIOR / LIMITATIONS
-------------------------------------------------------------
-
-- Large MRI files may take time to load
-- First-time loading depends on data availability
-- Missing files are handled gracefully in the UI
-- Performance depends on system memory and dataset size
+These are generated locally or contain large data files.
 
 ------------------------------------------------------------
-
-REQUIREMENTS
+TROUBLESHOOTING
 ------------------------------------------------------------
 
-anyio==4.13.0
-anywidget==0.11.0
-asttokens==3.0.1
-certifi==2026.5.20
-charset-normalizer==3.4.7
-click==8.4.1
-comm==0.2.3
-contourpy==1.3.3
-cycler==0.12.1
-decorator==5.3.1
-docutils==0.23
-executing==2.2.1
-fonttools==4.63.0
-h11==0.16.0
-idna==3.17
-ipyniivue==2.4.4
-ipython==9.14.0
-ipython_pygments_lexers==1.1.1
-ipywidgets==8.1.8
-itsdangerous==2.2.0
-jedi==0.19.2
-jupyterlab_widgets==3.0.16
-kiwisolver==1.5.0
-loro==1.10.3
-marimo==0.23.8
-Markdown==3.10.2
-matplotlib==3.10.9
-matplotlib-inline==0.2.2
-msgspec==0.21.1
-narwhals==2.21.2
-nibabel==5.4.2
-numpy==2.4.6
-packaging==26.2
-pandas==3.0.3
-parso==0.8.7
-pexpect==4.9.0
-pillow==12.2.0
-plotly==6.7.0
-prompt_toolkit==3.0.52
-psutil==7.2.2
-psygnal==0.15.1
-ptyprocess==0.7.0
-pure_eval==0.2.3
-Pygments==2.20.0
-pymdown-extensions==10.21.3
-pyparsing==3.3.2
-python-dateutil==2.9.0.post0
-python-multipart==0.0.30
-PyYAML==6.0.3
-pyzmq==27.1.0
-requests==2.34.2
-scipy==1.17.1
-six==1.17.0
-stack-data==0.6.3
-starlette==1.2.1
-tomlkit==0.15.0
-traitlets==5.15.0
-typing_extensions==4.15.0
-urllib3==2.7.0
-uvicorn==0.48.0
-wcwidth==0.7.0
-websockets==16.0
-widgetsnbextension==4.0.15
+If the viewer is blank:
+
+   - Make sure the subject was downloaded.
+   - Check that git-annex is installed.
+   - Try a different subject.
+
+If overlays do not appear:
+
+   - Use full-resolution mode.
+   - Click Download again to fetch derivatives.
+   - Confirm the subject has matching T2w derivative labels/segmentations.
+
+If metrics panel is empty:
+
+   - Upload metric CSV/TSV files.
+   - Confirm subject column matches the active participant ID.
+   - Confirm level column uses labels such as C1, C2, T1, etc.
+
+If 3D PNG export is unavailable:
+
+   - Run pip install -r requirements.txt
+   - Restart Marimo
