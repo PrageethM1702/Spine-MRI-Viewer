@@ -14,7 +14,7 @@
     }
   },
   "postCreateCommand": "bash /workspace/.devcontainer/setup.sh",
-  "postStartCommand": "marimo run /workspace/spine_app.py --host 0.0.0.0 --port 2718",
+  "postAttachCommand": "marimo run /workspace/spine_app.py --host 0.0.0.0 --port 2718",
   "customizations": {
     "vscode": {
       "extensions": [
