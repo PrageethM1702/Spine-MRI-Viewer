@@ -1,0 +1,66 @@
+DATASET CLONING INSTRUCTIONS (IMPORTANT)
+----------------------------------------
+
+The MRI dataset must be placed inside the following directory:
+
+   data/data-multi-subject/
+
+If this folder is missing or empty, the application will not display MRI scans.
+
+------------------------------------------------------------
+
+HOW TO CLONE THE DATASET
+------------------------------------------------------------
+
+From the project root folder, run:
+
+1. Create data directory (if not exists)
+
+   mkdir -p data
+
+2. Clone dataset into data folder
+
+   git clone <DATASET_REPOSITORY_URL> data/data-multi-subject
+
+------------------------------------------------------------
+
+IMPORTANT (GIT-ANNEX FILES)
+------------------------------------------------------------
+
+After cloning, MRI files may still NOT be fully downloaded.
+
+This dataset uses git-annex, which means large MRI files are stored as placeholders.
+
+To download actual MRI volumes:
+
+   git annex get data/data-multi-subject/sub-XXX/anat/sub-XXX_T2w.nii.gz
+
+Replace:
+   sub-XXX → actual subject folder name
+
+------------------------------------------------------------
+
+CHECK IF DATA IS READY
+------------------------------------------------------------
+
+A subject is ready when:
+
+- sub-XXX_T2w.nii.gz file is > 0 MB
+- Viewer successfully renders MRI slices
+- PNG export works without error
+
+------------------------------------------------------------
+
+SUMMARY
+------------------------------------------------------------
+
+1. Clone dataset into:
+   data/data-multi-subject/
+
+2. Ensure git-annex files are downloaded using:
+   git annex get
+
+3. Run application:
+   marimo run spine_app.py
+
+------------------------------------------------------------
