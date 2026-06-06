@@ -1,0 +1,31 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Marimo/session/cache
+__marimo__/
+.marimo/
+.ipynb_checkpoints/
+
+# Data / large files
+data/cache/
+data/data-multi-subject/
+data/pam50/
+data/metrics/
+exports/
+*.nii
+*.nii.gz
+*.dcm
+*.zip
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
