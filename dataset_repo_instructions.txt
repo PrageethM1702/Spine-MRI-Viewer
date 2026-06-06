@@ -1,66 +1,109 @@
-DATASET CLONING INSTRUCTIONS (IMPORTANT)
-----------------------------------------
+DATASET AND GIT-ANNEX INSTRUCTIONS
+==================================
 
-The MRI dataset must be placed inside the following directory:
+Repository:
+   https://github.com/spine-generic/data-multi-subject
+
+This app uses the spine-generic multi-subject dataset. The repository metadata
+is small, but MRI and derivative NIfTI files are managed with git-annex and are
+downloaded on demand.
+
+------------------------------------------------------------
+DATA FOLDERS
+------------------------------------------------------------
+
+The app creates these folders automatically:
 
    data/data-multi-subject/
+   data/cache/
+   data/metrics/
 
-If this folder is missing or empty, the application will not display MRI scans.
+Do not commit these folders to GitHub. They are intentionally ignored by
+.gitignore because they may contain large NIfTI files, cache files, and uploaded
+metric tables.
 
 ------------------------------------------------------------
-
-HOW TO CLONE THE DATASET
+WHAT IS DOWNLOADED AUTOMATICALLY
 ------------------------------------------------------------
 
-From the project root folder, run:
+During Codespaces/devcontainer setup:
 
-1. Create data directory (if not exists)
+   data/data-multi-subject/participants.tsv
+
+During app use:
+
+   Subject T2w MRI files are fetched when the user clicks Download.
+   Spinal cord segmentation and label derivatives are fetched when overlays are needed.
+   PAM50 files are fetched when required by the overlay pipeline.
+
+Metric CSV/TSV files are not part of this project by default. They must be
+uploaded by the client through the app or placed manually in:
+
+   data/metrics/
+
+------------------------------------------------------------
+MANUAL DATASET SETUP, IF NEEDED
+------------------------------------------------------------
+
+From the project root:
 
    mkdir -p data
+   git clone https://github.com/spine-generic/data-multi-subject data/data-multi-subject
+   cd data/data-multi-subject
+   git annex init
+   git annex enableremote computecanada-public
 
-2. Clone dataset into data folder
+To fetch one subject MRI manually:
 
-   git clone <DATASET_REPOSITORY_URL> data/data-multi-subject
+   git annex get sub-XXX/anat/sub-XXX_T2w.nii.gz
 
-------------------------------------------------------------
+To fetch subject overlay derivatives manually:
 
-IMPORTANT (GIT-ANNEX FILES)
-------------------------------------------------------------
+   git annex get derivatives/labels/sub-XXX/anat
+   git annex get derivatives/labels_softseg/sub-XXX/anat
+   git annex get derivatives/labels_softseg_bin/sub-XXX/anat
 
-After cloning, MRI files may still NOT be fully downloaded.
-
-This dataset uses git-annex, which means large MRI files are stored as placeholders.
-
-To download actual MRI volumes:
-
-   git annex get data/data-multi-subject/sub-XXX/anat/sub-XXX_T2w.nii.gz
-
-Replace:
-   sub-XXX → actual subject folder name
+Replace sub-XXX with the actual subject ID.
 
 ------------------------------------------------------------
-
 CHECK IF DATA IS READY
 ------------------------------------------------------------
 
 A subject is ready when:
 
-- sub-XXX_T2w.nii.gz file is > 0 MB
-- Viewer successfully renders MRI slices
-- PNG export works without error
+   - data/cache/sub-XXX/anat/sub-XXX_T2w.nii.gz exists and is larger than 1 KB
+   - The 2D viewer renders the MRI
+   - Spinal cord boundary overlay appears aligned
+   - 3D render displays the spinal cord/PAM50/label geometry
 
 ------------------------------------------------------------
+METRIC TABLES
+------------------------------------------------------------
 
+The quantitative metrics panel reads CSV/TSV files under:
+
+   data/metrics/
+
+Recommended columns:
+
+   participant_id, vertebral_level, CSA, FA, MTR
+
+Accepted subject columns:
+
+   participant_id, subject, subject_id, participant, sub
+
+Accepted level columns:
+
+   vertebral_level, level, label, vert_level, disc_level
+
+If no metric files are provided, the app shows an informational empty state.
+
+------------------------------------------------------------
 SUMMARY
 ------------------------------------------------------------
 
-1. Clone dataset into:
-   data/data-multi-subject/
-
-2. Ensure git-annex files are downloaded using:
-   git annex get
-
-3. Run application:
-   marimo run spine_app.py
-
-------------------------------------------------------------
+1. Do not push data/ to GitHub.
+2. The app downloads MRI and overlay data on demand.
+3. The client must provide metric CSV/TSV files for CSA/FA/MTR panels.
+4. Use full-resolution mode for anatomy-aware overlays.
+5. Use Fast Preview only for quick non-overlay viewing.
