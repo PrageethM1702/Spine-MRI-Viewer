@@ -1,7 +1,5 @@
 # Spine MRI Viewer
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PrageethM1702/Spine-MRI-Viewer)
-
 ![Marimo](https://img.shields.io/badge/Framework-Marimo-blue)
 ![Python](https://img.shields.io/badge/Python-3.12+-green)
 ![MRI](https://img.shields.io/badge/Domain-Spine%20MRI-red)
@@ -22,43 +20,10 @@ Interactive spine MRI viewer for the `spine-generic/data-multi-subject` dataset,
 - Draw annotation arrows/text and download annotated screenshots.
 - Measure distance, Cobb angle, and raw voxel intensity.
 
-## Current Scope
 
-Implemented:
-
-- Vendor dropdown.
-- Participant selector.
-- Cohort histogram.
-- Metadata CSV export.
-- PNG export support.
-- GitHub Codespaces configuration.
-- Performance guardrails with Fast Preview and full-resolution overlay mode.
-- Annotation and screenshot tools.
-- Distance ruler and Cobb angle tool.
-- Raw voxel intensity probe.
-- Anatomy-aware 2D overlays.
-- Anatomy-aware 3D visualization.
-- Vertebral level labels.
-- Spinal cord boundary overlays.
-- PAM50 cord/template proxy overlay.
-- Quantitative metrics panel.
-- Metric CSV/TSV upload.
-
-Paused by client scope:
-
-- Offline PWA.
-- DICOM upload.
-- URL-based sharing.
-- Case PDF export.
-- Multi-user sync.
-
-## Quick Start: GitHub Codespaces
+## Quick Start:
 
 Open the project in Codespaces:
-
-[https://codespaces.new/PrageethM1702/Spine-MRI-Viewer](https://codespaces.new/PrageethM1702/Spine-MRI-Viewer)
-
-The devcontainer will:
 
 - Install Python dependencies from `requirements.txt`.
 - Install `git-annex`.
@@ -187,7 +152,3 @@ PAM50 reference:
 - `analysis.py`: cohort analysis, downsampling, metadata export helpers.
 - `measurement.py`: distance, angle, and raw intensity tools.
 - `annotation.py`: 2D annotation and screenshot tools.
-
-## Client Data Needed
-
-To populate the quantitative metrics panel, provide CSV/TSV files containing precomputed CSA, FA, MTR, or related measures. These can be uploaded directly through the app.
