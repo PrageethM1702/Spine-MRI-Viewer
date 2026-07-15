@@ -20,18 +20,7 @@ Interactive spine MRI viewer for the `spine-generic/data-multi-subject` dataset,
 - Draw annotation arrows/text and download annotated screenshots.
 - Measure distance, Cobb angle, and raw voxel intensity.
 
-
-## Quick Start:
-
-Open the project in Codespaces:
-
-- Install Python dependencies from `requirements.txt`.
-- Install `git-annex`.
-- Create `data/cache`, `data/metrics`, and `data/data-multi-subject`.
-- Download `participants.tsv`.
-- Start Marimo on port `2718`.
-
-## Local Setup
+## Quick Start
 
 ```bash
 git clone https://github.com/PrageethM1702/Spine-MRI-Viewer.git
@@ -51,6 +40,8 @@ http://localhost:2718
 ```
 
 If your system does not open the browser automatically, copy the URL from the terminal.
+
+On first run, the app creates `data/cache`, `data/metrics`, and `data/data-multi-subject`, and downloads `participants.tsv` automatically.
 
 ## Metric CSV/TSV Upload
 
