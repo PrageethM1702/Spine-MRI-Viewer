@@ -2,14 +2,25 @@ import os
 import pandas as pd
 
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARTICIPANTS_TSV = os.path.join(_BASE_DIR, "data", "data-multi-subject", "participants.tsv")
+PARTICIPANTS_TSV = os.path.join(_BASE_DIR, "data", "metadata", "participants.tsv")
+_LEGACY_PARTICIPANTS_TSV = os.path.join(
+    _BASE_DIR, "data", "data-multi-subject", "participants.tsv"
+)
 CACHE_DIR = os.path.join(_BASE_DIR, "data", "cache")
 
 
+def get_participants_path() -> str | None:
+    for path in (PARTICIPANTS_TSV, _LEGACY_PARTICIPANTS_TSV):
+        if os.path.exists(path):
+            return path
+    return None
+
+
 def load_participants() -> pd.DataFrame:
-    if not os.path.exists(PARTICIPANTS_TSV):
+    path = get_participants_path()
+    if path is None:
         return pd.DataFrame(columns=["participant_id", "manufacturer"])
-    return pd.read_csv(PARTICIPANTS_TSV, sep="\t")
+    return pd.read_csv(path, sep="\t")
 
 
 def get_subjects_by_vendor(vendor: str = "All") -> list[str]:
