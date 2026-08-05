@@ -77,7 +77,7 @@ def _ensure_repo_cloned() -> bool:
         if r.returncode != 0:
             # enableremote failure is non-fatal if the remote is already
             # configured; continue rather than aborting.
-            if cmd[1] != "enableremote":
+            if cmd[2] != "enableremote":
                 _set_error(f"{' '.join(cmd)} failed.\n{r.stderr}")
                 return False
 
