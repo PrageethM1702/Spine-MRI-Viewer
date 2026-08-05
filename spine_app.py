@@ -13,7 +13,7 @@ def _():
 @app.cell
 def _():
     from data_loader import get_subjects_by_vendor, get_t2_path, get_vendor_for_subject
-    from mri_downloader import is_cached, get_cached_path, download_subject
+    from mri_downloader import is_cached, get_cached_path, download_subject, get_last_error
     from viewer import create_viewer
     from analysis import (
         export_t2_middle_slice_png,
@@ -49,7 +49,7 @@ def _():
     import os
     return (
         get_subjects_by_vendor, get_t2_path, get_vendor_for_subject,
-        is_cached, get_cached_path, download_subject,
+        is_cached, get_cached_path, download_subject, get_last_error,
         create_viewer,
         export_t2_middle_slice_png, compute_vendor_intensity_summary,
         build_cohort_plotly_fig, get_subject_metrics, downsample_nifti_if_needed,
@@ -92,6 +92,7 @@ def _(mo, subject):
 def _(
     mo, vendor, subject, download_btn, is_cached, get_cached_path,
     download_subject, download_subject_overlays, download_pam50, os,
+    get_last_error,
 ):
     if download_btn.value > 0 and not is_cached(subject.value):
         with mo.status.progress_bar(
@@ -110,7 +111,8 @@ def _(
                 download_subject_overlays(subject.value, bar=_bar)
                 download_pam50(bar=_bar)
             else:
-                _bar.update(increment=95, subtitle="Failed - check that git-annex is installed")
+                _download_error = get_last_error() or "Download failed for an unknown reason."
+                _bar.update(increment=95, subtitle=_download_error.splitlines()[0][:120])
     elif download_btn.value > 0 and is_cached(subject.value):
         with mo.status.progress_bar(
             total=100,
@@ -126,6 +128,13 @@ def _(
 
     if is_cached(subject.value):
         _status = mo.callout(mo.md(f"Subject **{subject.value}** is cached and ready."), kind="success")
+    elif get_last_error():
+        _status = mo.callout(
+            mo.md(
+                f"Download of **{subject.value}** failed.\n\n```\n{get_last_error()}\n```"
+            ),
+            kind="danger",
+        )
     else:
         _status = mo.callout(
             mo.md(f"Subject **{subject.value}** not downloaded. Click below to fetch."),
